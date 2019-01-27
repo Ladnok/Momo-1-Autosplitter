@@ -1,33 +1,33 @@
 state("momo1_v151")
 {
-    sbyte room : 0x018A014, 0x0;
+    //Gives the current room we are in
+    short room : 0x018A014, 0x0;
 
+    //Updates when we hit a savepoint
     int save : 0x0160250, 0x320;
 
-    double boss : 0x018B624, 0x42C, 0x3B0, 0x71C, 0X5C8, 0x5C4;
-    //boss does nothing
+    //boss health and current phase
+    double boss : 0x0185424, 0x44, 0x38C, 0x5CC, 0x8, 0x28;
+
+    double phase : 0X018580C, 0x23C, 0x28C, 0XDC, 0X4, 0X6DC;    
 }
 
 init
 {
-    int split;
+    int split = 0;
 }
 
-start
+update
 {
-/*
-    if (old.room == 12 && current.room == 9 )
-    {
-        return true;
-    }
-/*Starts a little bit later because of the time it takes to change the "room" from the moment you press new game.
-(in this case, the main menu is considered a room by the game, and it changes when the intro starts).*/
-*/
-
-    vars.split = 0;
+//resets the variable split.
+    if (timer.CurrentPhase == TimerPhase.NotRunning)
+	{
+		vars.split = 0;
+	}
 }
 
-split /*will split on every save point*/
+//will split on every save point and when the final boss dies
+split
 {
     if (current.room == 14 && vars.split == 0 && old.save != current.save)
     {
@@ -77,23 +77,18 @@ split /*will split on every save point*/
         return true;
 
     }
-/*    
-    if (current.room == 80 && vars.split == 7)
+ 
+    if (current.room == 80 && current.boss <= 11 && current.phase == 1)
     {
-        if (current.boss <= 15)
-        {
-            return true;
+        return true;
         
-        }
-
-        return false;
-    }*/
+    }
 }
 
-// The timer will reset everytime you go to the main menu.
+//Will reset the timer when we leave to the main menu.
 reset
 {
-    if (old.room != current.room && current.room == 73 )
+    if (current.room == 73 )
     {
         return true;
     }
