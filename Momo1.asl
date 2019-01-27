@@ -15,14 +15,14 @@ init
 
 start
 {
-
+/*
     if (old.room == 12 && current.room == 9 )
     {
         return true;
     }
-
 /*Starts a little bit later because of the time it takes to change the "room" from the moment you press new game.
 (in this case, the main menu is considered a room by the game, and it changes when the intro starts).*/
+*/
 
     vars.split = 0;
 }
