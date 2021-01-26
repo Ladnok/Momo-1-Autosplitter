@@ -1,95 +1,210 @@
 state("momo1_v151")
 {
-    //Gives the current room we are in
-    short room : 0x018A014, 0x0;
 
-    //Updates when we hit a savepoint
-    int save : 0x0160250, 0x320;
+	//Keeps track of the current room number
+	short room : 0x018A014, 0x0;
 
-    //boss health and current phase
-    double boss : 0x0185424, 0x44, 0x38C, 0x5CC, 0x8, 0x28;
+	//Keeps track of the X and Y position of the character (real coordinates)
+	double xPos : 0x001AF2F4, 0x80, 0x4, 0x0, 0x58;
+	double yPos : 0x001AF2F4, 0x80, 0x4, 0x0, 0x60;
 
-    double phase : 0X018580C, 0x23C, 0x28C, 0XDC, 0X4, 0X6DC;    
+	//Keeps track of the Boss health
+	//Starts at 180 in both phases, shotgun does 5 damage
+	//Boss changes phase and dies when Health <= 11
+	double bossHealth : 0x001AF2F4, 0x80, 0x20C, 0x24, 0x10C, 0x4, 0x10;
 }
+
+
+startup
+{
+
+	settings.Add("splits", true, "Splits");
+
+	settings.Add("zone1", true, "Zone 1", "splits");
+	settings.Add("zone2", true, "Zone 2", "splits");
+	settings.Add("zone3", true, "Zone 3", "splits");
+	settings.Add("zone4", true, "Zone 4", "splits");
+	settings.Add("zone5", true, "Zone 5", "splits");
+	settings.Add("zone6", true, "Zone 6", "splits");
+	settings.Add("zone7", true, "Zone 7", "splits");
+	settings.Add("zone8", true, "Zone 8", "splits");
+	settings.SetToolTip("zone8", "This split activates when you enter the boss room");
+	settings.Add("boss", true, "Boss", "splits");
+}
+
 
 init
 {
-    int split = 0;
+
+	// HashSet to hold splits already hit
+	// It prevents Livesplit from splitting on the same gift multiple times
+	vars.Splits = new HashSet<string>();
+
+	//To keep track of current boss phase
+	vars.bossPhase = 1;
 }
 
+
 update
-{
-//resets the variable split.
-    if (timer.CurrentPhase == TimerPhase.NotRunning)
+{	
+
+	// Clear any hit splits if timer stops
+	if (timer.CurrentPhase == TimerPhase.NotRunning)
 	{
-		vars.split = 0;
+
+		vars.Splits.Clear();
+	}
+
+
+	//Reset BossPhase in case of dying
+	if (old.room == 80 && current.room == 2)
+	{
+
+		vars.bossPhase = 1;
 	}
 }
 
 //will split on every save point and when the final boss dies
 split
 {
-    if (current.room == 14 && vars.split == 0 && old.save != current.save)
-    {
-        vars.split++;
-        return true;
 
-    }
+    	if (current.room == 14 && current.xPos >= 281)
+    	{
+
+		if (vars.Splits.Contains("one"))
+		{
+
+			return false;
+		}
+
+		vars.Splits.Add("one");
+		return settings["zone1"];
+    	}
     
-    if (current.room == 20 && vars.split == 1 && old.save != current.save)
-    {
-        vars.split++;
-        return true;
 
-    }
+    	if (current.room == 20 && current.xPos >= 281)
+    	{
 
-    if (current.room == 42 && vars.split == 2 && old.save != current.save)
-    {
-        vars.split++;
-        return true;
+		if (vars.Splits.Contains("two"))
+		{
 
-    }
+			return false;
+		}
 
-    if (current.room == 52 && vars.split == 3 && old.save != current.save)
-    {
-        vars.split++;
-        return true;
+		vars.Splits.Add("two");
+		return settings["zone2"];
+    	}
 
-    }
+    	if (current.room == 42 && current.xPos >= 281)
+    	{
 
-    if (current.room == 58 && vars.split == 4 && old.save != current.save)
-    {
-        vars.split++;
-        return true;
+		if (vars.Splits.Contains("three"))
+		{
 
-    }
+			return false;
+		}
+
+		vars.Splits.Add("three");
+		return settings["zone3"];
+    	}
+
+
+    	if (current.room == 52 && current.xPos <= 167)
+    	{
+
+		if (vars.Splits.Contains("four"))
+		{
+
+			return false;
+		}
+
+		vars.Splits.Add("four");
+		return settings["zone4"];
+    	}
+
+
+    	if (current.room == 58 && current.xPos <= 327)
+    	{
+
+		if (vars.Splits.Contains("five"))
+		{
+
+			return false;
+		}
+
+		vars.Splits.Add("five");
+		return settings["zone5"];
+    	}
     
-    if (current.room == 65 && vars.split == 5 && old.save != current.save)
-    {
-        vars.split++;
-        return true;
 
-    }
+    	if (current.room == 65 && current.yPos < 35 && current.xPos <= 102)
+    	{
+
+		if (vars.Splits.Contains("six"))
+		{
+
+			return false;
+		}
+
+		vars.Splits.Add("six");
+		return settings["zone6"];
+    	}
     
-    if (current.room == 72 && vars.split == 6 && old.save != current.save)
-    {
-        vars.split++;
-        return true;
 
-    }
+    	if (current.room == 72 && current.xPos >= 121)
+    	{
+
+		if (vars.Splits.Contains("seven"))
+		{
+
+			return false;
+		}
+
+		vars.Splits.Add("seven");
+		return settings["zone7"];
+    	}
+    
+
+    	if (current.room == 80 && old.room == 79)
+    	{
+
+		if (vars.Splits.Contains("eight"))
+		{
+
+			return false;
+		}
+
+		vars.Splits.Add("eight");
+		return settings["zone8"];
+    	}
  
-    if (current.room == 80 && current.boss <= 11 && current.phase == 1)
-    {
-        return true;
-        
-    }
+
+    	if (current.room == 80 && current.bossHealth <= 11 && old.bossHealth > 11)
+    	{
+
+		if (vars.bossPhase == 1){
+
+			vars.bossPhase = 2;
+			return false;
+		}
+
+		else if(vars.Splits.Contains("boss")){
+
+			return false;
+		}
+
+		vars.Splits.Add("boss");
+		return settings["boss"];
+    	}
 }
 
-//Will reset the timer when we leave to the main menu.
+//Will reset the timer when leaving to the main menu.
 reset
 {
-    if (current.room == 73 )
-    {
-        return true;
-    }
+
+    	if (current.room == 73)
+    	{
+
+        	return true;
+    	}
 }
