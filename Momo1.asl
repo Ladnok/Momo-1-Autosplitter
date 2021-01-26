@@ -48,15 +48,16 @@ init
 update
 {	
 
-	// Clear any hit splits if timer stops
+	// Clear any hit splits and the boss current phase if timer stops
 	if (timer.CurrentPhase == TimerPhase.NotRunning)
 	{
 
 		vars.Splits.Clear();
+		vars.bossPhase = 1;
 	}
 
 
-	//Reset BossPhase in case of dying
+	//Reset BossPhase in case of dying or exitting to main menu
 	if (old.room == 80 && current.room == 2)
 	{
 
@@ -179,6 +180,7 @@ split
     	}
  
 
+	//"old.bossHealth > 11" is necesary to prevent a false split from happening. From entering the boss room until Cheeoko (big white balloon we call boss) appears
     	if (current.room == 80 && current.bossHealth <= 11 && old.bossHealth > 11)
     	{
 
