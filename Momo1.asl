@@ -1,6 +1,9 @@
 state("momo1_v151")
 {
 
+	//32 In Main Menu, 0 InGame
+	byte MainMenu: 0x018B624, 0x20, 0x26;
+
 	//Keeps track of the current room number
 	short room : 0x018A014, 0x0;
 
@@ -65,7 +68,24 @@ update
 	}
 }
 
-//will split on every save point and when the final boss dies
+
+start
+{
+	return (old.MainMenu == 32 && current.MainMenu == 0);
+}
+
+
+reset
+{
+
+    	if (current.room == 73)
+    	{
+
+        	return true;
+    	}
+}
+
+
 split
 {
 
@@ -197,16 +217,5 @@ split
 
 		vars.Splits.Add("boss");
 		return settings["boss"];
-    	}
-}
-
-//Will reset the timer when leaving to the main menu.
-reset
-{
-
-    	if (current.room == 73)
-    	{
-
-        	return true;
     	}
 }
