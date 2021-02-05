@@ -40,7 +40,7 @@ init
 {
 
 	// HashSet to hold splits already hit
-	// It prevents Livesplit from splitting on the same gift multiple times
+	// It prevents Livesplit from splitting on the same split multiple times
 	vars.Splits = new HashSet<string>();
 
 	//To keep track of current boss phase
