@@ -1,1 +1,7 @@
-The auto splitter will start the timer and split everytime you hit a savepoint(If you hit it twice or more on the same run it will only split once) and upon killing the final boss.
+# Momo-1-Autosplitter
+Autosplitter using the ASL language for the game Momodora 1
+
+Features:
+-Split
+-Stop
+-Reset
