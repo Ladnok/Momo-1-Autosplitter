@@ -71,18 +71,14 @@ update
 
 start
 {
-	return (old.MainMenu == 32 && current.MainMenu == 0);
+	return old.MainMenu == 32 && current.MainMenu == 0;
 }
 
 
 reset
 {
 
-    	if (current.room == 73)
-    	{
-
-        	return true;
-    	}
+        return current.room == 73;
 }
 
 
