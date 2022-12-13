@@ -12,4 +12,4 @@ Preferably load the autosplitter from LiveSplit itsleft following this steps:
 
 This will make it so any future updates on the autosplitter will be automatically downloaded.
 
-In this repository there's also a CE tables with information including player's health, items, boss health, etc.
+In this repository there's also a CE table with information including player's health, items, boss health, etc.
